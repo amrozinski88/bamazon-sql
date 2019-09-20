@@ -29,7 +29,21 @@ const promptBuyer = () => {
         name: "amount",
         message: "Please enter how many you would like to purchase: ",
         validate: input => isNaN(input) === true ? false : true
-    }]).then(answers=>{ 
+    }]).then(({id,amount})=>{ 
+        console.log(id,amount)
+        connection.query("SELECT * FROM products WHERE item_id=?",[id],(err,res)=>{
+            if(err) throw err;
+            console.log(res)
+            if(res[0].stock_quantity < amount){
+                console.log(`We do not have that many please try a different amount`)
+                getAll()
+            }else{
+                console.log("Order confirmed")
+                console.log(`You have been charged ${res[0].price} All transactions are Non-transferable and Non-refundable`)
+            }
+
+
+        })
 
     })
 
@@ -39,7 +53,6 @@ const promptBuyer = () => {
 const getAll = () => {
     connection.query("SELECT * FROM products", (err, res) => {
         if (err) throw err;
-        console.log(res[0].product_name)
         res.map(({ item_id, product_name, price }) => {
             console.log(`--------------------------------------------`)
             console.log(`ID #:  ${item_id} ,Product Name: ${product_name}, Price: ${price}`)
