@@ -13,7 +13,12 @@ const connection = mysql.createConnection({
 
 
 const updateStock = (id,newStockQuantity)=>{
-    connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?",[newStockQuantity,id]
+    connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?",
+    [newStockQuantity,id],
+    err=>{
+        if (err) throw err;
+        connection.end()
+    }
     
     )}
 
@@ -36,15 +41,13 @@ const promptBuyer = () => {
         console.log(id,amount)
         connection.query("SELECT * FROM products WHERE item_id=?",[id],(err,res)=>{
             if(err) throw err;
-            console.log(res)
             if(res[0].stock_quantity < amount){
                 console.log(`We do not have that many please try a different amount`)
                 getAll()
             }else{
                 console.log("Order confirmed")
-                console.log(`You have been charged ${res[0].price} All transactions are Non-transferable and Non-refundable`)
+                console.log(`You have been charged ${res[0].price} All transactions are Non-transferable and Non-refundable..\nPlease run application again to continue shopping`)
                 const newStockQuantity = res[0].stock_quantity - amount 
-                console.log(newStockQuantity)
                 updateStock(id,newStockQuantity)
             }
             
