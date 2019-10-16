@@ -46,7 +46,7 @@ const promptBuyer = () => {
                 getAll()
             }else{
                 console.log("Order confirmed")
-                console.log(`You have been charged ${res[0].price} All transactions are Non-transferable and Non-refundable..\nPlease run application again to continue shopping`)
+                console.log(`You have been charged ${res[0].price*amount} All transactions are Non-transferable and Non-refundable..\nPlease run application again to continue shopping`)
                 const newStockQuantity = res[0].stock_quantity - amount 
                 updateStock(id,newStockQuantity)
             }
